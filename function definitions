@@ -1,0 +1,71 @@
+
+collections = {}
+
+
+def createCollection(p_collection_name):
+    collections[p_collection_name] = []
+
+def indexData(p_collection_name, p_exclude_column):
+    
+    employees = [
+        {'EmployeeID': '1001', 'Name': 'JERISH', 'Department': 'IT', 'Gender': 'Male'},
+        {'EmployeeID': '103', 'Name': 'BALAKRISH', 'Department': 'HR', 'Gender': 'Male'},
+        {'EmployeeID': '103', 'Name': 'ROGAN', 'Department': 'Designer', 'Gender': 'Male'},
+        {'EmployeeID': '104', 'Name': 'KAVYA', 'Department': 'Manager', 'Gender': 'Female'}
+    ]
+    
+    indexed_employees = [{k: v for k, v in emp.items() if k != p_exclude_column} for emp in employees]
+    
+    collections[p_collection_name].extend(indexed_employees)
+
+
+def searchByColumn(p_collection_name, p_column_name, p_column_value):
+    results = [emp for emp in collections[p_collection_name] if emp.get(p_column_name) == p_column_value]
+    return results
+
+
+def getEmpCount(p_collection_name):
+    return len(collections[p_collection_name])
+
+
+def delEmpById(p_collection_name, p_employee_id):
+    collections[p_collection_name] = [emp for emp in collections[p_collection_name] if emp.get('EmployeeID') != p_employee_id]
+
+def getDepFacet(p_collection_name):
+    dep_count = {}
+    for emp in collections[p_collection_name]:
+        dep = emp.get('Department')
+        if dep in dep_count:
+            dep_count[dep] += 1
+        else:
+            dep_count[dep] = 1
+    return dep_count
+
+
+v_nameCollection = 'Hash_YourName'
+v_phoneCollection = 'Hash_1234' 
+
+
+createCollection(v_nameCollection)
+createCollection(v_phoneCollection)
+
+
+indexData(v_nameCollection, 'Department')
+indexData(v_phoneCollection, 'Gender')
+
+
+print("Employee count :", getEmpCount(v_nameCollection))
+
+
+delEmpById(v_nameCollection, '103')
+
+
+print("Employee count  after deletion:", getEmpCount(v_nameCollection))
+
+
+print("Search by Department (IT) :", searchByColumn(v_nameCollection, 'Department', 'IT'))
+print("Search by Gender (Male) :", searchByColumn(v_nameCollection, 'Gender', 'Male'))
+print("Search by Department (IT) :", searchByColumn(v_phoneCollection, 'Department', 'IT'))
+
+print("Department facet for v_nameCollection:", getDepFacet(v_nameCollection))
+print("Department facet for v_phoneCollection:", getDepFacet(v_phoneCollection))
